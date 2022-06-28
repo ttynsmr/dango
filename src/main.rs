@@ -3,6 +3,7 @@ use github_rs::client::{Executor, Github};
 use linkify::LinkFinder;
 use regex::Regex;
 use serde_json::Value;
+use slack_api;
 use std::collections::{HashMap, HashSet};
 use std::env;
 
@@ -32,16 +33,19 @@ impl Note {
     pub fn collect_links(&mut self) {
         let mut finder = LinkFinder::new();
         finder.url_must_have_scheme(true);
+
         // let prev_link_count = self.links.len();
         for source in self.sources.iter() {
             self.links
                 .extend(finder.links(&source).map(|link| link.as_str().to_string()));
         }
+
         self.links.extend(
             finder
                 .links(&self.title)
                 .map(|link| link.as_str().to_string()),
         );
+
         // if prev_link_count != self.links.len() {
         //     println!("{} new link appended", self.links.len() - prev_link_count);
         // }
@@ -123,6 +127,7 @@ impl Notes {
             }
             None => {}
         }
+
         // create reference list
         let mut pairs: Vec<(String, String)> = Vec::new();
         match self.notes.as_ref() {
@@ -136,10 +141,12 @@ impl Notes {
             }
             None => {}
         }
+
         // apply reference
         for (to, from) in pairs {
             self.referenced_from(to, from);
         }
+
         // fetch dirty note
         let mut fetch_request_count = 0;
         let mut fetched_notes: Vec<Note> = Vec::new();
@@ -148,12 +155,12 @@ impl Notes {
                 let needs_fetch_notes = notes
                     .values()
                     .filter(|&n| n.need_fetch && n.title.is_empty());
-                let mut needs_fetch_notes2 = notes.values().filter(|&n| n.need_fetch);
+                // let mut needs_fetch_notes2 = notes.values().filter(|&n| n.need_fetch);
                 for note in needs_fetch_notes {
                     if note.url.starts_with("https://trello.com/") {
                         let card_id = note.url.split("/").collect::<Vec<&str>>()[4];
                         println!("need fetch as trello {} card_id: {}", note.url, card_id);
-                        let note = needs_fetch_notes2.find(|v| v.url == note.url).unwrap();
+                        // let note = needs_fetch_notes2.find(|v| v.url == note.url).unwrap();
                         fetch_request_count += 1;
                         match trello_fetch_note(&note) {
                             Ok(note) => {
@@ -178,7 +185,7 @@ impl Notes {
                     .unwrap()
                     .is_match(&note.url)
                     {
-                        // println!("need fetch as slack {}", note.url);
+                        println!("need fetch as slack {}", note.url);
                         // match slack_fetch_note(&note) {
                         //     Ok(note) => {
                         //         fetched_notes.push(note);
@@ -192,16 +199,19 @@ impl Notes {
             }
             None => {}
         }
+
         println!(
             "fetched notes count {}/{}",
             fetched_notes.len(),
             fetch_request_count
         );
+
         let fetched = !fetched_notes.is_empty();
         for note in fetched_notes {
             // println!("fetched note {}:{}:{}", note.need_fetch, note.url, note.title);
             self.append(note);
         }
+
         fetched
     }
 
@@ -215,17 +225,22 @@ impl Notes {
 fn main() {
     dotenv().ok();
     let args: Vec<String> = env::args().collect();
+
     // println!("{:?}", args);
     // let slack_token = env::var("SLACK_TOKEN").expect("SLACK_TOKEN is not found");
+    // let ms_project_token = env::var("MS_PLANNER_TOKEN").expect("MS_PLANNER_TOKEN is not found");
+
     let mut notes: Notes = Notes::new();
     match github_call(&mut notes, args.to_vec().split_off(1).join("+")) {
         Ok(()) => {}
         Err(e) => println!("{}", e),
     }
+
     match trello_call(&mut notes) {
         Ok(()) => {}
         Err(e) => println!("{}", e),
     }
+
     let mut phase = 1;
     while {
         println!(
@@ -235,7 +250,17 @@ fn main() {
         phase += 1;
         notes.analyze()
     } {}
+
     notes.dump();
+}
+
+fn slack_fetch_note(note: &Note) -> Result<Note, Box<dyn std::error::Error>> {
+    // let client = slack_api::requests::default_client().unwrap();
+    // let params = Default::default();
+    // let response = slack_api::channels::list(&client, &token, &params);
+
+    let note = Note::default();
+    Ok(note)
 }
 
 fn github_fetch_note(note: &Note) -> Result<Note, Box<dyn std::error::Error>> {
@@ -249,7 +274,9 @@ fn github_fetch_note(note: &Note) -> Result<Note, Box<dyn std::error::Error>> {
         .collect::<Vec<&str>>();
     let issues_endpoint = format!("repos/{}/{}/pulls/{}", params[0], params[1], params[3]);
     let mut new_note: Note = Note::default();
+
     println!("issues_endpoint:{}", issues_endpoint);
+
     let me = client
         .get()
         .custom_endpoint(&issues_endpoint)
@@ -272,9 +299,11 @@ fn github_fetch_note(note: &Note) -> Result<Note, Box<dyn std::error::Error>> {
         }
         Err(e) => println!("{}", e),
     }
+
     // note.sources.extend(checklist_names);
     // note.collect_links();
     // new_note.dump();
+
     Ok(new_note)
 }
 
@@ -309,6 +338,7 @@ fn github_call(notes: &mut Notes, query: String) -> Result<(), Box<dyn std::erro
         }
         Err(e) => println!("{}", e),
     }
+
     Ok(())
 }
 
@@ -327,6 +357,7 @@ fn trello_fetch_note(note: &Note) -> Result<Note, Box<dyn std::error::Error>> {
         }
         Err(e) => println!("{}", e),
     }
+
     // println!("{}", card_json);
     let card = json::parse(&card_json).unwrap();
     let mut checklist_names: Vec<String> = Vec::new();
@@ -337,6 +368,7 @@ fn trello_fetch_note(note: &Note) -> Result<Note, Box<dyn std::error::Error>> {
             checklist_names.push(check["name"].as_str().unwrap().to_string());
         }
     }
+
     let mut note = Note {
         url: note.url.clone(),
         title: card["name"].as_str().unwrap().to_string(),
@@ -346,8 +378,10 @@ fn trello_fetch_note(note: &Note) -> Result<Note, Box<dyn std::error::Error>> {
         need_fetch: false,
     };
     note.sources.extend(checklist_names);
+
     // note.collect_links();
     // note.dump();
+
     Ok(note)
 }
 
@@ -359,7 +393,9 @@ fn trello_call(notes: &mut Notes) -> Result<(), Box<dyn std::error::Error>> {
         "LgGUaRMO", trello_api_key, trello_token
     ))?
     .text()?;
+
     // println!("{}", card_json);
+
     let card = json::parse(&card_json).unwrap();
     let mut checklist: Vec<String> = Vec::new();
     for checklist_id in card["idChecklists"].members() {
@@ -375,6 +411,7 @@ fn trello_call(notes: &mut Notes) -> Result<(), Box<dyn std::error::Error>> {
             checklist.push(check["name"].as_str().unwrap().to_string());
         }
     }
+
     let mut note = Note {
         url: card["shortUrl"].as_str().unwrap().to_string(),
         title: card["name"].as_str().unwrap().to_string(),
@@ -385,6 +422,8 @@ fn trello_call(notes: &mut Notes) -> Result<(), Box<dyn std::error::Error>> {
     };
     note.sources.extend(checklist);
     note.collect_links();
+
     notes.append(note);
+
     Ok(())
 }
