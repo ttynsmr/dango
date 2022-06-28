@@ -81,12 +81,10 @@ impl Notes {
                 let needs_fetch_notes = notes
                     .values()
                     .filter(|&n| n.need_fetch && n.title.is_empty());
-                let mut needs_fetch_notes2 = notes.values().filter(|&n| n.need_fetch);
                 for note in needs_fetch_notes {
                     if plugins::trello::trello_match(&note.url) {
                         let card_id = note.url.split("/").collect::<Vec<&str>>()[4];
                         println!("need fetch as trello {} card_id: {}", note.url, card_id);
-                        let note = needs_fetch_notes2.find(|v| v.url == note.url).unwrap();
                         fetch_request_count += 1;
                         match plugins::trello::trello_fetch_note(&note) {
                             Ok(note) => {
