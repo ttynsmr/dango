@@ -1,9 +1,6 @@
-use regex::Regex;
-use std::collections::{HashMap, HashSet};
-
-use crate::relations::plugins;
-
 use super::note::Note;
+use crate::dependencies::plugins;
+use std::collections::{HashMap, HashSet};
 
 pub struct Notes {
     notes: Option<HashMap<String, Note>>,
@@ -106,14 +103,9 @@ impl Notes {
                             }
                             Err(e) => println!("{}", e),
                         }
-                    } else if Regex::new(
-                        r##"https://[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.slack\.com/"##,
-                    )
-                    .unwrap()
-                    .is_match(&note.url)
-                    {
+                    } else if plugins::slack::slack_match(&note.url) {
                         println!("need fetch as slack {}", note.url);
-                        match slack_fetch_note(&note) {
+                        match plugins::slack::slack_fetch_note(&note) {
                             Ok(note) => {
                                 fetched_notes.push(note);
                             }
@@ -163,12 +155,4 @@ impl Notes {
             note.dump();
         }
     }
-}
-
-fn slack_fetch_note(note: &Note) -> Result<Note, Box<dyn std::error::Error>> {
-    // let client = slack_api::requests::default_client().unwrap();
-    // let params = Default::default();
-    // let response = slack_api::channels::list(&client, &token, &params);
-
-    Ok(Note::default())
 }

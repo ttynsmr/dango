@@ -1,7 +1,7 @@
+use dependencies::plugins::github;
 use dotenv::dotenv;
-use relations::plugins::github;
 
-mod relations;
+mod dependencies;
 
 #[cfg_attr(
     all(not(debug_assertions), target_os = "windows"),
@@ -27,7 +27,7 @@ fn greet(name: &str) -> String {
 fn fetch_note(query: &str) -> String {
     format!("fetch note query: {}", query);
 
-    let mut notes: relations::notes::Notes = relations::notes::Notes::new();
+    let mut notes: dependencies::notes::Notes = dependencies::notes::Notes::new();
     match github::github_call(&mut notes, query.to_string()) {
         Ok(()) => {
             let mut phase = 1;
