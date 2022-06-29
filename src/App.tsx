@@ -7,12 +7,10 @@ import { Notes, Note } from './notes/note'
 const NotesList = ({ notes }: Notes) => (
   <ol>
     {Array.from(notes.values()).map((value, index, notes) => (<li key={index} > <a href={value.url} target="_blank">{value.title !== "" ? value.title : value.url}</a></li>))}
-    {/* {[new Note("url", "title"), new Note("url", "title2")].map((value, index, notes) => (<li key={index} > {`[${value.title}](${value.url})`}</li>))} */}
   </ol >
 );
 
 function App() {
-  const [count, setCount] = useState(0)
   const [url, setUrl] = useState("")
   const [disable, setDisable] = useState(false)
   const [notes, setNotes] = useState(new Notes)
