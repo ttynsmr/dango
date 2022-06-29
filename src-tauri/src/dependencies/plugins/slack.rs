@@ -1,11 +1,5 @@
-use crate::dependencies::note;
-
 use super::super::note::Note;
-use super::super::notes::Notes;
 use regex::Regex;
-use slack_api::channels::RepliesRequest;
-use slack_api::Timestamp;
-use std::collections::HashSet;
 use std::env;
 
 // https://ttynsmr.slack.com/archives/C03LVHTRD62/p1656080499750479
