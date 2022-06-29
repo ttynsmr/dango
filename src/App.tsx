@@ -27,7 +27,10 @@ function App() {
             // now we can call our Command!
             // Right-click the application background and open the developer tools.
             // You will see "Hello, World!" printed in the console!
-            invoke('fetch_note', { query: 'repo:ttynsmr/potato' })
+            // invoke('fetch_note', { query: 'repo:ttynsmr/potato' })
+            //   // `invoke` returns a Promise
+            //   .then((response) => console.log(response))
+            invoke('fetch_note', { url: 'https://ttynsmr.slack.com/archives/C03LVHTRD62/p1656080848314509' })
               // `invoke` returns a Promise
               .then((response) => console.log(response))
           }}>fetch note</button>

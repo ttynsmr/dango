@@ -13,6 +13,20 @@ impl Notes {
         }
     }
 
+    pub fn append_url(&mut self, url: &str) {
+        match self.notes.as_mut() {
+            Some(notes) => {
+                let mut note = Note::default();
+                note.url = url.to_string();
+                note.need_fetch = true;
+                notes.insert(note.url.clone(), note);
+            }
+            None => {
+                println!("None None");
+            }
+        }
+    }
+
     pub fn append(&mut self, note: Note) {
         match self.notes.as_mut() {
             Some(notes) => {
@@ -82,6 +96,7 @@ impl Notes {
                     .values()
                     .filter(|&n| n.need_fetch && n.title.is_empty());
                 for note in needs_fetch_notes {
+                    println!("what is {}", note.url);
                     if plugins::trello::trello_match(&note.url) {
                         let card_id = note.url.split("/").collect::<Vec<&str>>()[4];
                         println!("need fetch as trello {} card_id: {}", note.url, card_id);

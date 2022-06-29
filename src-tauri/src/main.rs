@@ -23,28 +23,48 @@ fn greet(name: &str) -> String {
     format!("Hello, {}!", name)
 }
 
+// #[tauri::command]
+// fn fetch_note(query: &str) -> String {
+//     format!("fetch note query: {}", query);
+
+//     let mut notes: dependencies::notes::Notes = dependencies::notes::Notes::new();
+//     match github::github_call(&mut notes, query.to_string()) {
+//         Ok(()) => {
+//             let mut phase = 1;
+//             while {
+//                 println!(
+//                     "=========================================== phase {}",
+//                     phase
+//                 );
+//                 phase += 1;
+//                 notes.analyze()
+//             } {}
+
+//             notes.to_string()
+//         }
+//         Err(e) => {
+//             println!("{}", e);
+//             e.to_string()
+//         }
+//     }
+// }
+
 #[tauri::command]
-fn fetch_note(query: &str) -> String {
-    format!("fetch note query: {}", query);
+fn fetch_note(url: &str) -> String {
+    format!("fetch note url: {}", url);
 
     let mut notes: dependencies::notes::Notes = dependencies::notes::Notes::new();
-    match github::github_call(&mut notes, query.to_string()) {
-        Ok(()) => {
-            let mut phase = 1;
-            while {
-                println!(
-                    "=========================================== phase {}",
-                    phase
-                );
-                phase += 1;
-                notes.analyze()
-            } {}
+    notes.append_url(url);
 
-            notes.to_string()
-        }
-        Err(e) => {
-            println!("{}", e);
-            e.to_string()
-        }
-    }
+    let mut phase = 1;
+    while {
+        println!(
+            "=========================================== phase {}",
+            phase
+        );
+        phase += 1;
+        notes.analyze()
+    } {}
+
+    notes.to_string()
 }
