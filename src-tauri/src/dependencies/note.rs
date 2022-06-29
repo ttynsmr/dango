@@ -1,6 +1,8 @@
 use linkify::LinkFinder;
+use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Note {
     pub url: String,
     pub title: String,

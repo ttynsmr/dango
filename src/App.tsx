@@ -2,39 +2,55 @@ import { useState } from 'react'
 import logo from './logo.svg'
 import './App.css'
 import { invoke } from '@tauri-apps/api'
+import { Notes, Note } from './notes/note'
+
+const NotesList = ({ notes }: Notes) => (
+  <ol>
+    {Array.from(notes.values()).map((value, index, notes) => (<li key={index} > <a href={value.url} target="_blank">{value.title !== "" ? value.title : value.url}</a></li>))}
+    {/* {[new Note("url", "title"), new Note("url", "title2")].map((value, index, notes) => (<li key={index} > {`[${value.title}](${value.url})`}</li>))} */}
+  </ol >
+);
 
 function App() {
   const [count, setCount] = useState(0)
+  const [url, setUrl] = useState("")
+  const [disable, setDisable] = useState(false)
+  const [notes, setNotes] = useState(new Notes)
 
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>Hello Vite + React!</p>
+        <div>
+          <p><label>retrieve url: {url}</label></p>
+          <input
+            type="text"
+            value={url}
+            onChange={event => setUrl(event.target.value)}
+          />
+        </div>
         <p>
-          <button type="button" onClick={() => setCount((count) => count + 1)}>
-            count is: {count}
-          </button>
-          <button type="button" onClick={() => {
-            // now we can call our Command!
-            // Right-click the application background and open the developer tools.
-            // You will see "Hello, World!" printed in the console!
-            invoke('greet', { name: 'World' })
+          <button type="button" disabled={disable} onClick={() => {
+            setDisable(true)
+            invoke<string>('fetch_note', { url: url })
               // `invoke` returns a Promise
-              .then((response) => console.log(response))
-          }}>hello</button>
-          <button type="button" onClick={() => {
-            // now we can call our Command!
-            // Right-click the application background and open the developer tools.
-            // You will see "Hello, World!" printed in the console!
-            // invoke('fetch_note', { query: 'repo:ttynsmr/potato' })
-            //   // `invoke` returns a Promise
-            //   .then((response) => console.log(response))
-            invoke('fetch_note', { url: 'https://ttynsmr.slack.com/archives/C03LVHTRD62/p1656080848314509' })
-              // `invoke` returns a Promise
-              .then((response) => console.log(response))
+              .then((response) => {
+                let response_as_json_object = JSON.parse(JSON.stringify(response));
+
+                let notes = new Notes;
+                let notes_as_map = response_as_json_object.notes as Map<string, Note>;
+                for (let note_key in notes_as_map) {
+                  notes.notes.set(note_key, new Note(response_as_json_object.notes[note_key]));
+                }
+
+                setDisable(false)
+                setNotes(notes)
+                console.log(notes)
+              })
           }}>fetch note</button>
         </p>
+        <NotesList notes={notes.notes} />
         <p>
           Edit <code>App.tsx</code> and save to test HMR updates.
         </p>

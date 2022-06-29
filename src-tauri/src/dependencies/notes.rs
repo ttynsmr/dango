@@ -1,7 +1,9 @@
 use super::note::Note;
 use crate::dependencies::plugins;
+use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, HashSet};
 
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Notes {
     notes: HashMap<String, Note>,
 }
