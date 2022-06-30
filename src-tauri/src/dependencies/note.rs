@@ -4,6 +4,7 @@ use std::collections::HashSet;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Note {
+    pub normalized_url: String,
     pub url: String,
     pub title: String,
     pub sources: Vec<String>,
@@ -15,6 +16,7 @@ pub struct Note {
 impl Default for Note {
     fn default() -> Self {
         Self {
+            normalized_url: String::from(""),
             url: String::from(""),
             title: String::from(""),
             sources: Vec::new(),
@@ -54,8 +56,9 @@ impl Note {
 
     pub fn to_string(&self) -> String {
         format!(
-            "[{}]({}) {}\n\tlinks:\n\t\t{}\n\treferenced:\n\t\t{}\n",
+            "[{}]({}) {} {}\n\tlinks:\n\t\t{}\n\treferenced:\n\t\t{}\n",
             self.title,
+            self.normalized_url,
             self.url,
             self.need_fetch,
             self.links

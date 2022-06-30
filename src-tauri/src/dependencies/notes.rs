@@ -1,5 +1,5 @@
 use super::note::Note;
-use crate::dependencies::plugins;
+use crate::dependencies::plugins::{self, Plugin};
 use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, HashSet};
 
@@ -30,6 +30,7 @@ impl Notes {
         self.notes
             .entry(link.clone())
             .or_insert(Note {
+                normalized_url: link.clone(),
                 url: link.clone(),
                 title: String::from(""),
                 sources: Vec::new(),
@@ -67,37 +68,25 @@ impl Notes {
             .notes
             .values()
             .filter(|&n| n.need_fetch && n.title.is_empty());
+
+        let plugins = vec![
+            Box::new(plugins::trello::Trello {}) as Box<dyn Plugin>,
+            Box::new(plugins::github::Github {}) as Box<dyn Plugin>,
+            Box::new(plugins::slack::Slack {}) as Box<dyn Plugin>,
+        ];
+
         for note in needs_fetch_notes {
             println!("what is {}", note.url);
-            if plugins::trello::trello_match(&note.url) {
-                let card_id = note.url.split("/").collect::<Vec<&str>>()[4];
-                println!("need fetch as trello {} card_id: {}", note.url, card_id);
-                fetch_request_count += 1;
-                match plugins::trello::trello_fetch_note(&note) {
-                    Ok(note) => {
-                        fetched_notes.push(note);
+            for plugin in &plugins {
+                if plugin.is_match(&note.url) {
+                    fetch_request_count += 1;
+                    match plugin.fetch_note(&note) {
+                        Ok(note) => {
+                            fetched_notes.push(note);
+                        }
+                        Err(e) => println!("{}", e),
                     }
-                    Err(e) => println!("{}", e),
                 }
-            } else if plugins::github::github_match(&note.url) {
-                println!("need fetch as github {}", note.url);
-                fetch_request_count += 1;
-                match plugins::github::github_fetch_note(&note) {
-                    Ok(note) => {
-                        fetched_notes.push(note);
-                    }
-                    Err(e) => println!("{}", e),
-                }
-            } else if plugins::slack::slack_match(&note.url) {
-                println!("need fetch as slack {}", note.url);
-                match plugins::slack::slack_fetch_note(&note) {
-                    Ok(note) => {
-                        fetched_notes.push(note);
-                    }
-                    Err(e) => println!("{}", e),
-                }
-            } else {
-                // println!("unknown url {}", note.url);
             }
         }
 
