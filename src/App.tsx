@@ -19,9 +19,8 @@ function App() {
   return (
     <div className="flex min-w-full min-h-full justify-center content-center">
       <header className="w-full h-full min-h-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
-        <p className="text-purple-50 bg-purple-600 rounded m-5 p-3">dango</p>
-        <div className='min-w-full justify-center content-center p-2'>
-          <div className='flex'>
+        <div className="text-purple-50 bg-purple-600 m-0 p-1">
+          <div className='flex gap-2 m-2'>
             <input
               className='form-input shadow appearance-none border rounded grow  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
               type="url"
@@ -49,6 +48,8 @@ function App() {
                 })
             }}>Fetch</button>
           </div>
+        </div>
+        <div className='min-w-full justify-center content-center p-2'>
         </div>
         <NotesList notes={notes.notes} />
       </header>
