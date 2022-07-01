@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { invoke } from '@tauri-apps/api'
-import { Notes, Note } from './notes/note'
+import { Notes, Note } from './notes/Note'
 import NoteCard from './interface/NoteCard'
 
 const NotesList = ({ notes }: Notes) => (

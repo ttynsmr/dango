@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Note } from "../notes/note"
+import { Note } from "../notes/Note"
 
 type Props = {
   note: Note
