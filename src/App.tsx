@@ -18,7 +18,7 @@ function App() {
 
   return (
     <div className="flex min-w-full min-h-full justify-center content-center">
-      <header className="w-full h-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+      <header className="w-full h-full min-h-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
         <p className="text-purple-50 bg-purple-600 rounded m-5 p-3">dango</p>
         <div className='min-w-full justify-center content-center p-2'>
           <label className='text-lg text-purple-50 content-center'>Input URL</label>
