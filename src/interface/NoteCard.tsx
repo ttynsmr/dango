@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Note } from "../notes/Note"
+import { Tooltip, Button } from "@material-tailwind/react";
 
 type Props = {
   note: Note
@@ -12,9 +13,14 @@ const NoteCard: React.FC<Props> = ({ note }) => (
         <div className="truncate min-w-[90px] bg-purple-400 text-purple-50 rounded px-2">
           <p className={"pr-1 fa-brands fa-" + note.plugin?.toLowerCase()} />{note.plugin}
         </div>
-        <button className="truncate font-bold font-sans text-purple-600 text-base p-0 text-left">
+        <Tooltip content={note.title} className="rounded">
+          <Button variant="text" size="lg" color="deep-purple" ripple="false" className="truncate font-bold font-sans text-purple-600 text-base p-0 text-left">
+            {note.title}
+          </Button>
+        </Tooltip>
+        {/* <button className="truncate font-bold font-sans text-purple-600 text-base p-0 text-left">
           {note.title}
-        </button>
+        </button> */}
       </div>
       <a className="truncate tracking-tight font-sans text-purple-600 text-xs p-0 hover:underline" href={note.url} target="_blank">
         <p className="pr-1 fa-solid fa-arrow-up-right-from-square" />
