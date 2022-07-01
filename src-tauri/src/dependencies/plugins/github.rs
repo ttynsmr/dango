@@ -7,9 +7,30 @@ use std::env;
 
 pub struct Github {}
 
+impl Github {
+    fn is_pullrequest(&self, url: &str) -> bool {
+        Regex::new(r##"https://github\.com/[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]/[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]/pull/[0-9]+"##).unwrap().is_match(url)
+    }
+
+    fn is_issue(&self, url: &str) -> bool {
+        Regex::new(r##"https://github\.com/[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]/[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]/issues/[0-9]+"##).unwrap().is_match(url)
+    }
+
+    fn url_type(&self, url: &str) -> String {
+        if self.is_issue(url) {
+            return String::from("issues");
+        }
+        if self.is_pullrequest(url) {
+            return String::from("pulls");
+        }
+
+        return String::from("pulls");
+    }
+}
+
 impl Plugin for Github {
     fn is_match(&self, url: &str) -> bool {
-        Regex::new(r##"https://github\.com/[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]/[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]/pull/[0-9]+"##).unwrap().is_match(url)
+        self.is_pullrequest(url) || self.is_issue(url)
     }
 
     fn normalize_url(&self, url: &str) -> String {
@@ -25,7 +46,13 @@ impl Plugin for Github {
             .unwrap()
             .split("/")
             .collect::<Vec<&str>>();
-        let issues_endpoint = format!("repos/{}/{}/pulls/{}", params[0], params[1], params[3]);
+        let issues_endpoint = format!(
+            "repos/{}/{}/{}/{}",
+            params[0],
+            params[1],
+            self.url_type(&note.url),
+            params[3]
+        );
         let mut new_note: Note = Note::default();
 
         println!("issues_endpoint:{}", issues_endpoint);
@@ -39,12 +66,14 @@ impl Plugin for Github {
                 // println!("{:#?}", headers);
                 // println!("{}", status);
                 if let Some(json) = json {
-                    // println!("{} {}", json["title"], json["html_url"]);
+                    println!("{}", json);
+                    println!("{} {}", json["title"], json["html_url"]);
                     new_note = Note {
                         normalized_url: self.normalize_url(&note.url),
                         url: note.url.clone(),
+                        plugin: self.name(),
                         title: json["title"].as_str().unwrap().to_string(),
-                        sources: vec![json["body"].as_str().unwrap().to_string()],
+                        sources: vec![json["body"].as_str().unwrap_or_default().to_string()],
                         links: new_note.links.clone(),
                         referenced: new_note.referenced.clone(),
                         need_fetch: false,
@@ -59,5 +88,9 @@ impl Plugin for Github {
         // new_note.dump();
 
         Ok(new_note)
+    }
+
+    fn name(&self) -> String {
+        String::from("GitHub")
     }
 }

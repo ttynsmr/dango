@@ -59,6 +59,7 @@ impl Plugin for Slack {
         let mut new_note = Note::default();
         new_note.normalized_url = self.normalize_url(&note.url);
         new_note.url = note.url.clone();
+        new_note.plugin = self.name();
         new_note.sources.extend(
             replies["messages"]
                 .members_mut()
@@ -71,5 +72,9 @@ impl Plugin for Slack {
         // println!("{}", new_note.sources.join(",\n"));
 
         Ok(new_note)
+    }
+
+    fn name(&self) -> String {
+        String::from("Slack")
     }
 }

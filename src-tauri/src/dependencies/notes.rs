@@ -32,6 +32,7 @@ impl Notes {
             .or_insert(Note {
                 normalized_url: link.clone(),
                 url: link.clone(),
+                plugin: String::from("Unknown"),
                 title: String::from(""),
                 sources: Vec::new(),
                 links: HashSet::new(),

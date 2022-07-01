@@ -44,6 +44,7 @@ impl Plugin for Trello {
         let mut note = Note {
             normalized_url: self.normalize_url(note.url.as_ref()),
             url: note.url.clone(),
+            plugin: self.name(),
             title: card["name"].as_str().unwrap_or_default().to_string(),
             sources: vec![card["desc"].as_str().unwrap_or_default().to_string()],
             links: note.links.clone(),
@@ -56,5 +57,9 @@ impl Plugin for Trello {
         // note.dump();
 
         Ok(note)
+    }
+
+    fn name(&self) -> String {
+        String::from("Trello")
     }
 }

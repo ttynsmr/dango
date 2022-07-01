@@ -6,6 +6,7 @@ use std::collections::HashSet;
 pub struct Note {
     pub normalized_url: String,
     pub url: String,
+    pub plugin: String,
     pub title: String,
     pub sources: Vec<String>,
     pub links: HashSet<String>,      // 参照先
@@ -18,6 +19,7 @@ impl Default for Note {
         Self {
             normalized_url: String::from(""),
             url: String::from(""),
+            plugin: String::from("Unknown"),
             title: String::from(""),
             sources: Vec::new(),
             links: HashSet::new(),
