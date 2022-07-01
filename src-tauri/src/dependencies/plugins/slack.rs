@@ -9,6 +9,7 @@ impl Plugin for Slack {
         Regex::new(r##"https://[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.slack\.com/"##)
             .unwrap()
             .is_match(url)
+            && url.split("/").collect::<Vec<&str>>().len() >= 6
     }
 
     fn normalize_url(&self, url: &str) -> String {
@@ -19,6 +20,10 @@ impl Plugin for Slack {
         let slack_token = env::var("SLACK_BOT_TOKEN").expect("SLACK_BOT_TOKEN is not found");
 
         let splitted_url = note.url.split("/").collect::<Vec<&str>>();
+        if splitted_url.len() < 6 {
+            let e = std::io::Error::new(std::io::ErrorKind::InvalidInput, "Invalid Url");
+            return Err(Box::new(e));
+        }
         let slack_channel = splitted_url[4];
         let slack_thread_ts = splitted_url[5];
 
