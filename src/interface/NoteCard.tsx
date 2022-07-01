@@ -7,7 +7,7 @@ type Props = {
 
 const NoteCard: React.FC<Props> = ({ note }) => (
   <>
-    <div className="bg-purple-50 flex flex-col rounded m-2 w-[300px]">
+    <div className="bg-purple-50 flex flex-col rounded m-0 w-[300px]">
       <button className="truncate font-bold font-sans text-purple-600 text-base p-0">
         {note.title}
       </button>

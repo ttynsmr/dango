@@ -1,13 +1,11 @@
 import { useState } from 'react'
-import logo from './logo.svg'
-import './App.css'
 import { invoke } from '@tauri-apps/api'
 import { Notes, Note } from './notes/note'
 import NoteCard from './interface/NoteCard'
 
 const NotesList = ({ notes }: Notes) => (
   <>
-    <div className='w-full grid grid-flow-col auto-cols-max gap-0'>
+    <div className='w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1 p-4 content-start justify-self-auto'>
       {Array.from(notes.values()).map((value, index, notes) => (<NoteCard note={value} />))}
     </div>
   </>
@@ -19,14 +17,14 @@ function App() {
   const [notes, setNotes] = useState(new Notes)
 
   return (
-    <div className="App">
-      <header className="App-header bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+    <div className="flex min-w-full min-h-full justify-center content-center">
+      <header className="w-full h-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
         <p className="text-purple-50 bg-purple-600 rounded m-5 p-3">dango</p>
-        <div className='flex grid grid-flow-row auto-rows-max'>
-          <p><label className='text-lg'>Input URL</label></p>
+        <div className='min-w-full justify-center content-center p-2'>
+          <label className='text-lg text-purple-50 content-center'>Input URL</label>
           <div className='flex'>
             <input
-              className='form-input shadow appearance-none border rounded min-w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+              className='form-input shadow appearance-none border rounded grow  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
               type="url"
               value={url}
               onChange={event => setUrl(event.target.value)}
