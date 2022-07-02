@@ -9,11 +9,11 @@ pub struct Github {}
 
 impl Github {
     fn is_pullrequest(&self, url: &str) -> bool {
-        Regex::new(r##"https://github\.com/[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]/[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]/pull/[0-9]+"##).unwrap().is_match(url)
+        Regex::new(r##"https://github\.com/[a-zA-Z0-9][a-zA-Z0-9-\._]+[a-zA-Z0-9]/[a-zA-Z0-9][a-zA-Z0-9-\._]+[a-zA-Z0-9]/pull/[0-9]+"##).unwrap().is_match(url)
     }
 
     fn is_issue(&self, url: &str) -> bool {
-        Regex::new(r##"https://github\.com/[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]/[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]/issues/[0-9]+"##).unwrap().is_match(url)
+        Regex::new(r##"https://github\.com/[a-zA-Z0-9][a-zA-Z0-9-\._]+[a-zA-Z0-9]/[a-zA-Z0-9][a-zA-Z0-9-\._]+[a-zA-Z0-9]/issues/[0-9]+"##).unwrap().is_match(url)
     }
 
     fn url_type(&self, url: &str) -> String {
