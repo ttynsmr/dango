@@ -25,12 +25,14 @@ impl Plugin for Trello {
             card_id, trello_api_key, trello_token
         )) {
             Ok(card_json_result) => {
-                card_json = card_json_result.text()?;
+                if (card_json_result.status().is_success()) {
+                    card_json = card_json_result.text()?;
+                }
             }
             Err(e) => println!("{}", e),
         }
 
-        // println!("{}", card_json);
+        println!("{}", card_json);
         let card = json::parse(&card_json).unwrap_or(json::JsonValue::Null);
         let mut checklist_names: Vec<String> = Vec::new();
         for checklist in card["checklists"].members() {
@@ -45,7 +47,10 @@ impl Plugin for Trello {
             normalized_url: self.normalize_url(note.url.as_ref()),
             url: note.url.clone(),
             plugin: self.name(),
-            title: card["name"].as_str().unwrap_or_default().to_string(),
+            title: card["name"]
+                .as_str()
+                .unwrap_or("🔒Private Board")
+                .to_string(),
             sources: vec![card["desc"].as_str().unwrap_or_default().to_string()],
             links: note.links.clone(),
             referenced: note.referenced.clone(),
