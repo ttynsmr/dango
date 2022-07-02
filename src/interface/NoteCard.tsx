@@ -6,11 +6,15 @@ type Props = {
   note: Note
 }
 
+const getPluginColor = (name: string): string => {
+  return 'plugin-' + name.toLowerCase()
+}
+
 const NoteCard: React.FC<Props> = ({ note }) => (
   <>
-    <div className="bg-purple-50 flex flex-col rounded min-w-[150px] m-0 p-2 justify-self-auto">
+    <div className="bg-purple-50 flex flex-col rounded min-w-[150px] m-0 p-2 justify-self-auto gap-y-1.5">
       <div className="flex gap-2 p-0">
-        <div className="truncate min-w-[90px] bg-purple-400 text-purple-50 rounded px-2">
+        <div className={`text-sm truncate min-w-[90px] bg-${getPluginColor(note.plugin || "purple-400")} text-purple-50 rounded px-2`}>
           <p className={"pr-1 fa-brands fa-" + note.plugin?.toLowerCase()} />{note.plugin}
         </div>
         <Tooltip content={note.title} className="rounded bg-black text-purple-50">
