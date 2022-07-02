@@ -12,7 +12,7 @@ const getPluginColor = (name: string): string => {
 
 const NoteCard: React.FC<Props> = ({ note }) => (
   <>
-    <div className="bg-purple-50 flex flex-col rounded min-w-[150px] m-0 p-2 justify-self-auto gap-y-1.5">
+    <div className="shadow-md bg-purple-50 flex flex-col rounded min-w-[150px] m-0 p-2 justify-self-auto gap-y-1.5">
       <div className="flex gap-2 p-0">
         <div className={`text-xs truncate min-w-[70px] bg-${getPluginColor(note.plugin || "purple-400")} text-purple-50 rounded px-2 py-1`}>
           {note.plugin !== 'Unknown' && <p className={"pr-1 fa-brands fa-" + note.plugin?.toLowerCase()} />}{note.plugin}

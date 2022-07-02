@@ -20,7 +20,7 @@ function App() {
     <div className="flex min-w-full min-h-full justify-center content-center">
       <header className="w-full h-full min-h-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
         {/* <header className="w-full h-full min-h-screen bg-gradient-to-r from-dango-pink via-dango-white to-dango-green"> */}
-        <div className="text-purple-50 bg-purple-600 m-0 p-1">
+        <div className="shadow-xl text-purple-50 bg-purple-600 m-0 p-1">
           <div className='flex gap-2 m-2'>
             <input
               className='form-input shadow appearance-none border rounded grow  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
