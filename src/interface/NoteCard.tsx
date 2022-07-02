@@ -14,7 +14,7 @@ const NoteCard: React.FC<Props> = ({ note }) => (
           <p className={"pr-1 fa-brands fa-" + note.plugin?.toLowerCase()} />{note.plugin}
         </div>
         <Tooltip content={note.title} className="rounded bg-black text-purple-50">
-          <Button variant="text" size="lg" color="deep-purple" ripple="false" className="truncate font-bold font-sans text-purple-600 text-base p-0 text-left">
+          <Button variant="text" size="lg" color="deep-purple" ripple={false} className="truncate font-bold font-sans text-purple-600 text-base p-0 text-left">
             {note.title}
           </Button>
         </Tooltip>
