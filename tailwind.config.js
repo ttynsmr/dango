@@ -10,7 +10,7 @@ module.exports = {
         'plugin-github': '#161b22',
         'plugin-slack': '#4a154b',
         'plugin-trello': '#0075b9',
-        'plugin-unknown': 'purple-400',
+        'plugin-unknown': '#ea005e',
       }
     },
   },
