@@ -25,7 +25,7 @@ impl Plugin for Trello {
             card_id, trello_api_key, trello_token
         )) {
             Ok(card_json_result) => {
-                if (card_json_result.status().is_success()) {
+                if card_json_result.status().is_success() {
                     card_json = card_json_result.text()?;
                 }
             }
