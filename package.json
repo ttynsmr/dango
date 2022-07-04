@@ -12,7 +12,8 @@
     "@material-tailwind/react": "^1.0.6",
     "@tauri-apps/api": "^1.0.1",
     "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react-dom": "^18.0.0",
+    "react-markdown": "^8.0.3"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.2",

@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Note } from "../notes/Note"
 import { Tooltip, Button } from "@material-tailwind/react";
+import ReactMarkdown from 'react-markdown'
 
 type Props = {
   note: Note
@@ -29,12 +30,12 @@ const NoteCard: React.FC<Props> = ({ note }) => {
           {note.title}
         </button> */}
         </div>
-        <button className="text-left text-xs shadow-inner rounded bg-purple-100 break-words p-1" onClick={() => {
+        <button className="truncate text-left text-[8px] shadow-inner rounded bg-purple-100 break-words p-1" onClick={() => {
           setShowSource(!showSource)
         }} hidden={note.sources?.join("\n").length === 0}>
           <div className={showSource ? "fa-solid fa-square-minus" : "fa-solid fa-square-plus"} />
-          <br hidden={!showSource} />
-          <code>{showSource ? note.sources?.join("\n") : note.sources?.at(0)?.split('\n').at(0)}</code>
+          <code hidden={showSource}>{note.sources?.at(0)?.split('\n').at(0)}</code>
+          <div hidden={!showSource}><ReactMarkdown  >{note.sources?.join("\n")}</ReactMarkdown></div>
         </button>
         <a className="truncate tracking-tight font-sans text-purple-600 text-xs p-0 hover:underline" href={note.url} target="_blank">
           <p className="pr-1 fa-solid fa-arrow-up-right-from-square" />
