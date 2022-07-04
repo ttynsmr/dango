@@ -39,6 +39,10 @@ const NoteCard: React.FC<Props> = ({ note, onClickHandler }) => {
           {note.title}
         </button> */}
         </div>
+        <a className="truncate tracking-tight font-sans text-purple-600 text-xs p-0 hover:underline" href={note.url} target="_blank">
+          <p className="pr-1 fa-solid fa-arrow-up-right-from-square" />
+          {note.url}
+        </a>
         <button className="truncate text-left text-[8px] shadow-inner rounded bg-purple-100 break-words p-1" onClick={() => {
           setShowSource(!showSource)
         }} hidden={note.sources?.join("\n").length === 0}>
@@ -46,10 +50,6 @@ const NoteCard: React.FC<Props> = ({ note, onClickHandler }) => {
           <code hidden={showSource}>{note.sources?.at(0)?.split('\n').at(0)}</code>
           <div hidden={!showSource}><ReactMarkdown  >{note.sources ? note.sources.join("\n") : ""}</ReactMarkdown></div>
         </button>
-        <a className="truncate tracking-tight font-sans text-purple-600 text-xs p-0 hover:underline" href={note.url} target="_blank">
-          <p className="pr-1 fa-solid fa-arrow-up-right-from-square" />
-          {note.url}
-        </a>
         <div className="bg-plugin-github" hidden>1</div>
         <div className="bg-plugin-slack" hidden>2</div>
         <div className="bg-plugin-trello hidden">3</div>
