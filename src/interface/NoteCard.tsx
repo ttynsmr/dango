@@ -4,15 +4,17 @@ import { Tooltip, Button } from "@material-tailwind/react";
 import ReactMarkdown from 'react-markdown'
 
 type Props = {
-  note: Note
+  note: Note,
+  onClickHandler: (url: string) => void
 }
 
 const getPluginColor = (name: string): string => {
   return 'plugin-' + name.toLowerCase()
 }
 
-const NoteCard: React.FC<Props> = ({ note }) => {
+const NoteCard: React.FC<Props> = ({ note, onClickHandler }) => {
   const [showSource, setShowSource] = useState(false)
+  const [handleClick, setHandleClick] = useState()
 
   return (
     <>
@@ -22,7 +24,14 @@ const NoteCard: React.FC<Props> = ({ note }) => {
             {note.plugin !== 'Unknown' && <p className={"pr-1 fa-brands fa-" + note.plugin?.toLowerCase()} />}{note.plugin}
           </div>
           <Tooltip content={note.title} className="rounded bg-black text-purple-50">
-            <Button variant="text" size="lg" color="deep-purple" ripple={false} className="truncate font-bold font-sans text-purple-600 text-base p-0 text-left">
+            <Button
+              variant="text"
+              size="lg"
+              color="deep-purple"
+              ripple={false}
+              className="truncate font-bold font-sans text-purple-600 text-base p-0 text-left"
+              onClick={() => { if (note.url) onClickHandler(note.url) }}
+            >
               {note.title}
             </Button>
           </Tooltip>
@@ -35,7 +44,7 @@ const NoteCard: React.FC<Props> = ({ note }) => {
         }} hidden={note.sources?.join("\n").length === 0}>
           <div className={showSource ? "fa-solid fa-square-minus" : "fa-solid fa-square-plus"} />
           <code hidden={showSource}>{note.sources?.at(0)?.split('\n').at(0)}</code>
-          <div hidden={!showSource}><ReactMarkdown  >{note.sources?.join("\n")}</ReactMarkdown></div>
+          <div hidden={!showSource}><ReactMarkdown  >{note.sources ? note.sources.join("\n") : ""}</ReactMarkdown></div>
         </button>
         <a className="truncate tracking-tight font-sans text-purple-600 text-xs p-0 hover:underline" href={note.url} target="_blank">
           <p className="pr-1 fa-solid fa-arrow-up-right-from-square" />

@@ -1,15 +1,24 @@
 import { useState } from 'react'
 import { invoke } from '@tauri-apps/api'
 import { Notes, Note } from './notes/Note'
-import NoteCard from './interface/NoteCard'
+import NotesList from './interface/NoteContainer'
 
-const NotesList = ({ notes }: Notes) => (
-  <>
-    <div className='w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1 p-4 content-start justify-self-auto'>
-      {Array.from(notes.values()).map((value, index, notes) => (<NoteCard note={value} />))}
-    </div>
-  </>
-);
+const fetch = async (url: string): Promise<Notes> => {
+  let notes = new Notes;
+  console.log(url)
+  await invoke<string>('fetch_note', { url: url })
+    // `invoke` returns a Promise
+    .then((response) => {
+      let response_as_json_object = JSON.parse(JSON.stringify(response));
+
+      let notes_as_map = response_as_json_object.notes as Map<string, Note>;
+      for (let note_key in notes_as_map) {
+        notes.notes.set(note_key, new Note(response_as_json_object.notes[note_key]));
+      }
+    })
+  console.log(notes)
+  return notes;
+}
 
 function App() {
   const [url, setUrl] = useState("")
@@ -29,31 +38,30 @@ function App() {
               value={url}
               onChange={event => setUrl(event.target.value)}
             />
-            <button className='bg-blue-500 hover:bg-blue-700 text-purple-50 font-bold py-2 px-4 rounded' type="button" disabled={disable} onClick={() => {
-              setDisable(true)
-              fetch(url)
-              invoke<string>('fetch_note', { url: url })
-                // `invoke` returns a Promise
-                .then((response) => {
-                  let response_as_json_object = JSON.parse(JSON.stringify(response));
-
-                  let notes = new Notes;
-                  let notes_as_map = response_as_json_object.notes as Map<string, Note>;
-                  for (let note_key in notes_as_map) {
-                    notes.notes.set(note_key, new Note(response_as_json_object.notes[note_key]));
-                  }
-
-                  setDisable(false)
+            <button
+              className='bg-blue-500 hover:bg-blue-700 text-purple-50 font-bold py-2 px-4 rounded'
+              type="button"
+              disabled={disable}
+              onClick={() => {
+                setDisable(true)
+                setNotes(new Notes)
+                fetch(url).then((notes) => {
                   setNotes(notes)
-                  console.log(notes)
+                  setDisable(false)
                 })
-            }}>Fetch</button>
+              }}>Fetch</button>
           </div>
         </div>
-        <div className='min-w-full justify-center content-center p-2'>
-        </div>
-        <NotesList notes={notes.notes} />
-      </header>
+        <NotesList notes={notes} onClickHandler={(url) => {
+          setDisable(true)
+          setNotes(new Notes)
+          fetch(url).then((notes) => {
+            setNotes(notes)
+            setDisable(false)
+          })
+          setDisable(false)
+        }} />
+      </header >
     </div >
   )
 }
