@@ -2,6 +2,11 @@ import { useState } from 'react'
 import { invoke } from '@tauri-apps/api'
 import { Notes, Note } from './notes/Note'
 import NotesList from './interface/NoteContainer'
+import { fas } from '@fortawesome/free-solid-svg-icons'
+import { fab } from '@fortawesome/free-brands-svg-icons'
+import { library } from '@fortawesome/fontawesome-svg-core'
+library.add(fab, fas)
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const fetch = async (url: string): Promise<Notes> => {
   let notes = new Notes;

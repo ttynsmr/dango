@@ -2,6 +2,8 @@ import { useState } from "react"
 import { Note } from "../notes/Note"
 import { Tooltip, Button } from "@material-tailwind/react";
 import ReactMarkdown from 'react-markdown'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { IconName } from '@fortawesome/fontawesome-svg-core';
 
 type Props = {
   note: Note,
@@ -10,6 +12,25 @@ type Props = {
 
 const getPluginColor = (name: string): string => {
   return 'plugin-' + name.toLowerCase()
+}
+
+type IconProps = {
+  plugin: string | undefined,
+}
+const PluginIcon: React.FC<IconProps> = ({ plugin }) => {
+  const getPluginName = (plugin: string | undefined) => {
+    if (plugin !== undefined && plugin !== 'Unknown') {
+      console.log(plugin.toLowerCase())
+      return <><FontAwesomeIcon className="pr-1" icon={["fab", plugin.toLowerCase() as IconName]} />{plugin}</>
+    }
+    else {
+      return <><FontAwesomeIcon className="pr-1" icon={["fas", "notdef"]} />{plugin}</>
+    }
+  }
+
+  return (
+    getPluginName(plugin)
+  )
 }
 
 const NoteCard: React.FC<Props> = ({ note, onClickHandler }) => {
@@ -21,7 +42,8 @@ const NoteCard: React.FC<Props> = ({ note, onClickHandler }) => {
       <div className="shadow-md bg-purple-50 flex flex-col rounded min-w-[150px] m-0 p-2 justify-self-auto gap-y-1.5 border-4 border-purple-600 hover:border-purple-50">
         <div className="flex gap-2 p-0">
           <div className={`text-xs truncate min-w-[70px] bg-${getPluginColor(note.plugin || "purple-400")} text-purple-50 rounded px-2 py-1`}>
-            {note.plugin !== 'Unknown' && <p className={"pr-1 fa-brands fa-" + note.plugin?.toLowerCase()} />}{note.plugin}
+            {/* <FontAwesomeIcon className="pr-1" icon={["fab", getPluginName(note)]} />{note.plugin} */}
+            <PluginIcon plugin={note.plugin} />
           </div>
           <Tooltip content={note.title} className="rounded bg-black text-purple-50">
             <Button
@@ -48,7 +70,7 @@ const NoteCard: React.FC<Props> = ({ note, onClickHandler }) => {
         }} hidden={note.sources?.join("\n").length === 0}>
           <div className={showSource ? "fa-solid fa-square-minus" : "fa-solid fa-square-plus"} />
           <code hidden={showSource}>{note.sources?.at(0)?.split('\n').at(0)}</code>
-          <div hidden={!showSource}><ReactMarkdown  >{note.sources ? note.sources.join("\n") : ""}</ReactMarkdown></div>
+          <div hidden={!showSource}><ReactMarkdown>{note.sources ? note.sources.join("\n") : ""}</ReactMarkdown></div>
         </button>
         <div className="bg-plugin-github" hidden>1</div>
         <div className="bg-plugin-slack" hidden>2</div>
