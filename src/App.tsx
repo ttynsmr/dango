@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { invoke } from '@tauri-apps/api'
 import { Notes, Note } from './notes/Note'
 import NotesList from './interface/NoteContainer'
+import { Input, Button } from "@material-tailwind/react";
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -25,6 +26,7 @@ const fetch = async (url: string): Promise<Notes> => {
   return notes;
 }
 
+
 function App() {
   const [url, setUrl] = useState("")
   const [disable, setDisable] = useState(false)
@@ -34,12 +36,11 @@ function App() {
     <div className="flex min-w-full min-h-full justify-center content-center">
       <header className="w-full h-full min-h-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
         {/* <header className="w-full h-full min-h-screen bg-gradient-to-r from-dango-pink via-dango-white to-dango-green"> */}
-        <div className="shadow-xl text-purple-50 bg-purple-600 m-0 p-1">
+        <div className="shadow-xl text-purple-600 bg-purple-50 m-0 p-1">
           <div className='flex gap-2 m-2'>
-            <input
-              className='form-input shadow appearance-none border rounded grow  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
-              type="url"
-              placeholder="Input URL"
+            <Input
+              className='bg-purple-50'
+              label="URL"
               value={url}
               onChange={event => setUrl(event.target.value)}
             />
@@ -55,6 +56,18 @@ function App() {
                   setDisable(false)
                 })
               }}>Fetch</button>
+            <button
+              className='bg-blue-500 hover:bg-blue-700 text-purple-50 font-bold py-2 px-4 rounded'
+              type="button"
+              disabled={disable}
+              onClick={() => {
+                setDisable(true)
+                setNotes(new Notes)
+                fetch(url).then((notes) => {
+                  setNotes(notes)
+                  setDisable(false)
+                })
+              }}><FontAwesomeIcon icon={["fas", "bars"]} /></button>
           </div>
         </div>
         <NotesList notes={notes} onClickHandler={(url) => {

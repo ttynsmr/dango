@@ -1,5 +1,6 @@
 use dotenv::dotenv;
-
+use keyring;
+use std::error::Error;
 mod dependencies;
 
 #[cfg_attr(
@@ -35,4 +36,16 @@ fn fetch_note(url: &str) -> dependencies::notes::Notes {
     } {}
 
     notes
+}
+
+#[tauri::command]
+fn store_token(username: &str, service: &str, value: &str) -> bool {
+    let entry = keyring::Entry::new(service, username);
+    entry.set_password(value).is_ok()
+}
+
+#[tauri::command]
+fn load_token(username: &str, service: &str) -> String {
+    let entry = keyring::Entry::new(service, username);
+    entry.get_password().unwrap_or_default()
 }

@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 const withMT = require("@material-tailwind/react/utils/withMT");
+const colors = require('material-ui-colors')
 
 module.exports = withMT({
   content: ['./index.html', './src/**/*.{js,jsx,ts,tsx}'],
@@ -13,6 +14,7 @@ module.exports = withMT({
         'plugin-slack': '#4a154b',
         'plugin-trello': '#0075b9',
         'plugin-unknown': '#ea005e',
+        ...colors
       }
     },
   },
