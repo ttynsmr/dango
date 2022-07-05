@@ -59,13 +59,13 @@ const NoteCard: React.FC<Props> = ({ note, onClickHandler }) => {
         </button> */}
         </div>
         <a className="truncate tracking-tight font-sans text-purple-600 text-xs p-0 hover:underline" href={note.url} target="_blank">
-          <p className="pr-1 fa-solid fa-arrow-up-right-from-square" />
+          <FontAwesomeIcon className="pr-1" icon={["fas", "arrow-up-right-from-square"]} />
           {note.url}
         </a>
         <button className="truncate text-left text-[8px] shadow-inner rounded bg-purple-100 break-words p-1" onClick={() => {
           setShowSource(!showSource)
         }} hidden={note.sources?.join("\n").length === 0}>
-          <div className={showSource ? "fa-solid fa-square-minus" : "fa-solid fa-square-plus"} />
+          <FontAwesomeIcon icon={["fas", (showSource ? "square-minus" : "square-plus") as IconName]} />
           <code hidden={showSource}>{note.sources?.at(0)?.split('\n').at(0)}</code>
           <div hidden={!showSource}><ReactMarkdown>{note.sources ? note.sources.join("\n") : ""}</ReactMarkdown></div>
         </button>
