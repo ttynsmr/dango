@@ -8,6 +8,7 @@ import { fab } from '@fortawesome/free-brands-svg-icons'
 import { library } from '@fortawesome/fontawesome-svg-core'
 library.add(fab, fas)
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import ConfigRecordGroup from './interface/ConfigRecordGroup';
 
 const fetch = async (url: string): Promise<Notes> => {
   let notes = new Notes;
@@ -26,6 +27,15 @@ const fetch = async (url: string): Promise<Notes> => {
   return notes;
 }
 
+function Tokens() {
+  return (
+    <>
+      <ConfigRecordGroup groupName='GitHub' configs={["Token"]} />
+      <ConfigRecordGroup groupName='Slack' configs={["User token"]} />
+      <ConfigRecordGroup groupName='Trello' configs={["API Key", "Token"]} />
+    </>
+  )
+}
 
 function App() {
   const [url, setUrl] = useState("")
@@ -70,6 +80,7 @@ function App() {
               }}><FontAwesomeIcon icon={["fas", "bars"]} /></button>
           </div>
         </div>
+        {/* <Tokens /> */}
         <NotesList notes={notes} onClickHandler={(url) => {
           setDisable(true)
           setNotes(new Notes)
