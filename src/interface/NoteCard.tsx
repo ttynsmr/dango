@@ -24,7 +24,7 @@ const PluginIcon: React.FC<IconProps> = ({ plugin }) => {
       return <><FontAwesomeIcon className="pr-1" icon={["fab", plugin.toLowerCase() as IconName]} />{plugin}</>
     }
     else {
-      return <><FontAwesomeIcon className="pr-1" icon={["fas", "notdef"]} />{plugin}</>
+      return <><FontAwesomeIcon className="pr-1" icon={["fas", "circle-question"]} />{plugin}</>
     }
   }
 
