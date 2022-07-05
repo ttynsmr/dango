@@ -46,16 +46,13 @@ const NoteCard: React.FC<Props> = ({ note, onClickHandler }) => {
             <PluginIcon plugin={note.plugin} />
           </div>
           <Tooltip content={note.title} className="rounded bg-black text-purple-50">
-            <Button
-              variant="text"
-              size="lg"
-              color="deep-purple"
-              ripple={false}
+            <a
               className="truncate font-bold font-sans text-purple-600 text-base p-0 text-left"
+              href="#"
               onClick={() => { if (note.url) onClickHandler(note.url) }}
             >
               {note.title}
-            </Button>
+            </a>
           </Tooltip>
           {/* <button className="truncate font-bold font-sans text-purple-600 text-base p-0 text-left">
           {note.title}
