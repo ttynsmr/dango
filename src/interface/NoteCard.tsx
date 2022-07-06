@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Note } from "../notes/Note"
+import { Note } from "../models/Note"
 import { Tooltip, Chip, Card, CardBody } from "@material-tailwind/react";
 import ReactMarkdown from 'react-markdown'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -20,7 +20,6 @@ type IconProps = {
 const PluginIcon: React.FC<IconProps> = ({ plugin }) => {
   const getPluginName = (plugin: string | undefined) => {
     if (plugin !== undefined && plugin !== 'Unknown') {
-      console.log(plugin.toLowerCase())
       return <FontAwesomeIcon className="px-0.5 text-xl" icon={["fab", plugin.toLowerCase() as IconName]} />
     }
     else {

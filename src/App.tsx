@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { invoke } from '@tauri-apps/api'
-import { Notes, Note } from './notes/Note'
+import { Notes, Note } from './models/Note'
 import NotesList from './interface/NoteContainer'
 import { Input, Button } from "@material-tailwind/react";
 import { fas } from '@fortawesome/free-solid-svg-icons'
@@ -9,10 +9,11 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 library.add(fab, fas)
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ConfigRecordGroup from './interface/ConfigRecordGroup';
+import Config from './models/Config';
 
 const fetch = async (url: string): Promise<Notes> => {
   let notes = new Notes;
-  console.log(url)
+  // console.log(url)
   await invoke<string>('fetch_note', { url: url })
     // `invoke` returns a Promise
     .then((response) => {
@@ -23,16 +24,20 @@ const fetch = async (url: string): Promise<Notes> => {
         notes.notes.set(note_key, new Note(response_as_json_object.notes[note_key]));
       }
     })
-  console.log(notes)
+  // console.log(notes)
   return notes;
 }
 
 function Tokens() {
+  const [githubConfigs, setGithubConfigs] = useState([new Config("github", "token", "Token", "")]);
+  const [slackConfigs, setSlackConfigs] = useState([new Config("slack", "token", "Token", "")]);
+  const [trelloConfigs, setTrelloConfigs] = useState([new Config("trello", "api-key", "API Key", ""), new Config("trello", "token", "Token", "")]);
+
   return (
     <>
-      <ConfigRecordGroup groupName='GitHub' configs={["Token"]} />
-      <ConfigRecordGroup groupName='Slack' configs={["User token"]} />
-      <ConfigRecordGroup groupName='Trello' configs={["API Key", "Token"]} />
+      <ConfigRecordGroup groupName='GitHub' configs={githubConfigs} />
+      <ConfigRecordGroup groupName='Slack' configs={slackConfigs} />
+      <ConfigRecordGroup groupName='Trello' configs={trelloConfigs} />
     </>
   )
 }
@@ -54,9 +59,7 @@ function App() {
               value={url}
               onChange={event => setUrl(event.target.value)}
             />
-            <button
-              className='bg-blue-500 hover:bg-blue-700 text-purple-50 font-bold py-2 px-4 rounded'
-              type="button"
+            <Button
               disabled={disable}
               onClick={() => {
                 setDisable(true)
@@ -65,10 +68,8 @@ function App() {
                   setNotes(notes)
                   setDisable(false)
                 })
-              }}>Fetch</button>
-            <button
-              className='bg-blue-500 hover:bg-blue-700 text-purple-50 font-bold py-2 px-4 rounded'
-              type="button"
+              }}>Fetch</Button>
+            <Button
               disabled={disable}
               onClick={() => {
                 setDisable(true)
@@ -77,7 +78,7 @@ function App() {
                   setNotes(notes)
                   setDisable(false)
                 })
-              }}><FontAwesomeIcon icon={["fas", "bars"]} /></button>
+              }}><FontAwesomeIcon icon={["fas", "bars"]} /></Button>
           </div>
         </div>
         {/* <Tokens /> */}

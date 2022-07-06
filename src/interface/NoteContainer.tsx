@@ -1,4 +1,4 @@
-import { Notes } from "../notes/Note";
+import { Notes } from "../models/Note";
 import NoteCard from "./NoteCard";
 
 type Props = {

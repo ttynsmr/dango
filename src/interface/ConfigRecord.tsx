@@ -7,7 +7,7 @@ type Props = {
 const ConfigRecord: React.FC<Props> = ({ configName }) => {
   return (
     <>
-      <Input label={configName} />
+      <Input className="bg-indigo-500" label={configName} />
     </>
   )
 };
