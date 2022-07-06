@@ -55,7 +55,7 @@ impl Plugin for Github {
         );
         let mut new_note: Note = Note::default();
 
-        println!("issues_endpoint:{}", issues_endpoint);
+        // println!("issues_endpoint:{}", issues_endpoint);
 
         let me = client
             .get()
@@ -66,8 +66,8 @@ impl Plugin for Github {
                 // println!("{:#?}", headers);
                 // println!("{}", status);
                 if let Some(json) = json {
-                    println!("{}", json);
-                    println!("{} {}", json["title"], json["html_url"]);
+                    // println!("{}", json);
+                    // println!("{} {}", json["title"], json["html_url"]);
                     new_note = Note {
                         normalized_url: self.normalize_url(&note.url),
                         url: note.url.clone(),

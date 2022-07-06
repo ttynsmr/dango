@@ -32,7 +32,7 @@ impl Plugin for Trello {
             Err(e) => println!("{}", e),
         }
 
-        println!("{}", card_json);
+        // println!("{}", card_json);
         let card = json::parse(&card_json).unwrap_or(json::JsonValue::Null);
         let mut checklist_names: Vec<String> = Vec::new();
         for checklist in card["checklists"].members() {
