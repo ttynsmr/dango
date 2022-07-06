@@ -13,9 +13,7 @@ import Config from './models/Config';
 
 const fetch = async (url: string): Promise<Notes> => {
   let notes = new Notes;
-  // console.log(url)
   await invoke<string>('fetch_note', { url: url })
-    // `invoke` returns a Promise
     .then((response) => {
       let response_as_json_object = JSON.parse(JSON.stringify(response));
 
@@ -24,7 +22,6 @@ const fetch = async (url: string): Promise<Notes> => {
         notes.notes.set(note_key, new Note(response_as_json_object.notes[note_key]));
       }
     })
-  // console.log(notes)
   return notes;
 }
 
@@ -50,7 +47,6 @@ function App() {
   return (
     <div className="flex min-w-full min-h-full justify-center content-center">
       <header className="w-full h-full min-h-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
-        {/* <header className="w-full h-full min-h-screen bg-gradient-to-r from-dango-pink via-dango-white to-dango-green"> */}
         <div className="shadow-xl text-purple-600 bg-purple-50 m-0 p-1">
           <div className='flex gap-2 m-2'>
             <Input

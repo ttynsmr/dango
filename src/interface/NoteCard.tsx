@@ -36,7 +36,6 @@ const PluginIcon: React.FC<IconProps> = ({ className, plugin }) => {
 
 const NoteCard: React.FC<Props> = ({ note, onClickHandler, onGetNoteInfo }) => {
   const [showSource, setShowSource] = useState(false)
-  const [handleClick, setHandleClick] = useState()
 
   const getPlugin = (url: string) => {
     let note = onGetNoteInfo(url);
@@ -83,10 +82,6 @@ const NoteCard: React.FC<Props> = ({ note, onClickHandler, onGetNoteInfo }) => {
             <code hidden={showSource}>{note.sources?.at(0)?.split('\n').at(0)}</code>
             <div hidden={!showSource}><ReactMarkdown>{note.sources ? note.sources.join("\n") : ""}</ReactMarkdown></div>
           </button>
-          <div className="bg-plugin-github" hidden>1</div>
-          <div className="bg-plugin-slack" hidden>2</div>
-          <div className="bg-plugin-trello hidden">3</div>
-          <div className="bg-plugin-unknown hidden">4</div>
 
           <p className="font-bold" hidden={note.links.length == 0}><FontAwesomeIcon className="pr-1" icon={["fas", "arrow-right-from-bracket"]} />referencing</p>
           <p className="indent-2">{Array.from(note.links).map(value => <Tooltip content={getTitle(value)} className="rounded bg-black text-purple-50">
