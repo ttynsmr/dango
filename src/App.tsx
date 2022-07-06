@@ -82,15 +82,20 @@ function App() {
           </div>
         </div>
         {/* <Tokens /> */}
-        <NotesList notes={notes} onClickHandler={(url) => {
-          setDisable(true)
-          setNotes(new Notes)
-          fetch(url).then((notes) => {
-            setNotes(notes)
+        <NotesList
+          notes={notes}
+          onClickHandler={(url) => {
+            setDisable(true)
+            setNotes(new Notes)
+            fetch(url).then((notes) => {
+              setNotes(notes)
+              setDisable(false)
+            })
             setDisable(false)
-          })
-          setDisable(false)
-        }} />
+          }}
+          onGetNoteInfo={url => {
+            return notes.notes.get(url)
+          }} />
       </header >
     </div >
   )
