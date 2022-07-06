@@ -64,8 +64,9 @@ function App() {
               onClick={() => {
                 setDisable(true)
                 setNotes(new Notes)
-                fetch(url).then((notes) => {
-                  setNotes(notes)
+                fetch(url).then((responseNotes) => {
+                  responseNotes.notes = new Map([...responseNotes.notes.entries(), ...notes.notes.entries()])
+                  setNotes(responseNotes)
                   setDisable(false)
                 })
               }}>Fetch</Button>
@@ -74,8 +75,9 @@ function App() {
               onClick={() => {
                 setDisable(true)
                 setNotes(new Notes)
-                fetch(url).then((notes) => {
-                  setNotes(notes)
+                fetch(url).then((responseNotes) => {
+                  responseNotes.notes = new Map([...responseNotes.notes.entries(), ...notes.notes.entries()])
+                  setNotes(responseNotes)
                   setDisable(false)
                 })
               }}><FontAwesomeIcon icon={["fas", "bars"]} /></Button>
@@ -87,8 +89,9 @@ function App() {
           onClickHandler={(url) => {
             setDisable(true)
             setNotes(new Notes)
-            fetch(url).then((notes) => {
-              setNotes(notes)
+            fetch(url).then((responseNotes) => {
+              responseNotes.notes = new Map([...responseNotes.notes.entries(), ...notes.notes.entries()])
+              setNotes(responseNotes)
               setDisable(false)
             })
             setDisable(false)
