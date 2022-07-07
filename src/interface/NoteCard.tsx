@@ -57,6 +57,10 @@ const NoteCard: React.FC<Props> = ({ note, onClickHandler, onGetNoteInfo }) => {
 
   return (
     <>
+      <div className="bg-plugin-github" hidden>1</div>
+      <div className="bg-plugin-slack" hidden>2</div>
+      <div className="bg-plugin-trello hidden">3</div>
+      <div className="bg-plugin-unknown hidden">4</div>
       <Card className="shadow-md bg-purple-50 flex flex-col rounded min-w-[150px] m-0 p-2 justify-self-auto gap-y-1.5 border-4 border-purple-600 hover:border-purple-50">
         <div className="flex gap-2 p-0">
           <Chip icon={<PluginIcon className="px-0.5 text-xl" plugin={note.plugin} />} className={`bg-${getPluginColor(note.plugin || "purple-400")}`} value={note.plugin ? note.plugin : 'Unknown'} />
