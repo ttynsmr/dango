@@ -15,37 +15,6 @@ import { GithubPlugin } from './models/GithubPlugin';
 import { TrelloPlugin } from './models/TrelloPlugin';
 import { SlackPlugin } from './models/SlackPlugin';
 
-function isPullrequest(url: string): boolean {
-  let regexp = new RegExp("https://github\.com/[a-zA-Z0-9][a-zA-Z0-9-\._]+[a-zA-Z0-9]/[a-zA-Z0-9][a-zA-Z0-9-\._]+[a-zA-Z0-9]/pull/[0-9]+")
-  if (regexp.test(url)) {
-    console.log("url is github(pull request).")
-    return true
-  }
-  return false
-}
-
-function isIssue(url: string): boolean {
-  let regexp = new RegExp("https://github\.com/[a-zA-Z0-9][a-zA-Z0-9-\._]+[a-zA-Z0-9]/[a-zA-Z0-9][a-zA-Z0-9-\._]+[a-zA-Z0-9]/issues/[0-9]+")
-  if (regexp.test(url)) {
-    console.log("url is github(issue).")
-    return true
-  }
-  return false
-}
-
-function isGithubUrl(url: string): boolean {
-  return isPullrequest(url) || isIssue(url)
-}
-
-function isSlackUrl(url: string): boolean {
-  let slackRegexp = new RegExp("https://[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.slack\.com/")
-  return slackRegexp.test(url)
-}
-
-function isTrelloUrl(url: string): boolean {
-  return url.startsWith("https://trello.com/c/")
-}
-
 const fetch = async (url: string): Promise<Notes> => {
   let plugins = new Plugins()
 
