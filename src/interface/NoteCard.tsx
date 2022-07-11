@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconName } from '@fortawesome/fontawesome-svg-core';
 
 type Props = {
-  note: Note,
+  note: Note
   onClickHandler: (url: string) => void
   onGetNoteInfo: (url: string) => Note | undefined
 }
@@ -21,7 +21,7 @@ type IconProps = {
 }
 const PluginIcon: React.FC<IconProps> = ({ className, plugin }) => {
   const getPluginName = (className: string, plugin: string) => {
-    if (plugin !== 'Unknown') {
+    if (plugin.toLowerCase() !== 'unknown') {
       return <FontAwesomeIcon className={className} icon={["fab", plugin.toLowerCase() as IconName]} />
     }
     else {
@@ -50,9 +50,9 @@ const NoteCard: React.FC<Props> = ({ note, onClickHandler, onGetNoteInfo }) => {
   const getTitle = (url: string) => {
     let note = onGetNoteInfo(url);
     if (note && note.title.length > 0) {
-      return <>{note.title}<br />{url}</>
+      return <div key={url} >{note.title}<br />{url}</div>
     }
-    else { return url }
+    else { return <div key={url}>{url}</div> }
   }
 
   return (
@@ -87,13 +87,13 @@ const NoteCard: React.FC<Props> = ({ note, onClickHandler, onGetNoteInfo }) => {
             <div hidden={!showSource}><ReactMarkdown>{note.sources ? note.sources.join("\n") : ""}</ReactMarkdown></div>
           </button>
 
-          <p className="font-bold" hidden={note.links.length == 0}><FontAwesomeIcon className="pr-1" icon={["fas", "arrow-right-from-bracket"]} />referencing</p>
-          <p className="indent-2">{Array.from(note.links).map(value => <Tooltip content={getTitle(value)} className="rounded bg-black text-purple-50">
+          <p className="font-bold" hidden={note.links.size == 0}><FontAwesomeIcon className="pr-1" icon={["fas", "arrow-right-from-bracket"]} />referencing</p>
+          <p className="indent-2">{Array.from(note.links).map(value => <Tooltip key={value} content={getTitle(value)} className="rounded bg-black text-purple-50">
             <a className="hover:text-purple-400 rounded grid-flow-col" onClick={() => { onClickHandler(value) }}><PluginIcon className="px-0.5 text-xl" plugin={getPlugin(value)} /></a>
           </Tooltip>
           )}</p>
-          <p className="font-bold" hidden={note.referenced.length == 0}><FontAwesomeIcon className="pr-1" icon={["fas", "arrow-right-to-bracket"]} />referenced</p>
-          <p className="indent-2">{Array.from(note.referenced).map(value => <Tooltip content={getTitle(value)} className="rounded bg-black text-purple-50">
+          <p className="font-bold" hidden={note.referenced.size == 0}><FontAwesomeIcon className="pr-1" icon={["fas", "arrow-right-to-bracket"]} />referenced</p>
+          <p className="indent-2">{Array.from(note.referenced).map(value => <Tooltip key={value} content={getTitle(value)} className="rounded bg-black text-purple-50">
             <a className="hover:text-purple-400 rounded grid-flow-col" onClick={() => { onClickHandler(value) }}><PluginIcon className="px-0.5 text-xl" plugin={getPlugin(value)} /></a>
           </Tooltip>
           )}</p>

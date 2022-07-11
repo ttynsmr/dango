@@ -1,6 +1,6 @@
 use dotenv::dotenv;
 use keyring;
-use std::error::Error;
+use std::{env, error::Error};
 mod dependencies;
 
 #[cfg_attr(
@@ -13,7 +13,11 @@ fn main() {
     let context = tauri::generate_context!();
     tauri::Builder::default()
         .menu(tauri::Menu::os_default(&context.package_info().name))
-        .invoke_handler(tauri::generate_handler![fetch_note])
+        .invoke_handler(tauri::generate_handler![
+            fetch_note,
+            store_token,
+            load_token
+        ])
         .run(context)
         .expect("error while running tauri application");
 }
@@ -46,6 +50,7 @@ fn store_token(username: &str, service: &str, value: &str) -> bool {
 
 #[tauri::command]
 fn load_token(username: &str, service: &str) -> String {
-    let entry = keyring::Entry::new(service, username);
-    entry.get_password().unwrap_or_default()
+    // let entry = keyring::Entry::new(service, username);
+    // entry.get_password().unwrap_or_default()
+    env::var(service.clone()).expect(format!("{} is not found", &service).as_ref())
 }

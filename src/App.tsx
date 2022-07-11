@@ -10,18 +10,62 @@ library.add(fab, fas)
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ConfigRecordGroup from './interface/ConfigRecordGroup';
 import Config from './models/Config';
+import { Plugins } from './models/Plugins';
+import { GithubPlugin } from './models/GithubPlugin';
+import { TrelloPlugin } from './models/TrelloPlugin';
+import { SlackPlugin } from './models/SlackPlugin';
+
+function isPullrequest(url: string): boolean {
+  let regexp = new RegExp("https://github\.com/[a-zA-Z0-9][a-zA-Z0-9-\._]+[a-zA-Z0-9]/[a-zA-Z0-9][a-zA-Z0-9-\._]+[a-zA-Z0-9]/pull/[0-9]+")
+  if (regexp.test(url)) {
+    console.log("url is github(pull request).")
+    return true
+  }
+  return false
+}
+
+function isIssue(url: string): boolean {
+  let regexp = new RegExp("https://github\.com/[a-zA-Z0-9][a-zA-Z0-9-\._]+[a-zA-Z0-9]/[a-zA-Z0-9][a-zA-Z0-9-\._]+[a-zA-Z0-9]/issues/[0-9]+")
+  if (regexp.test(url)) {
+    console.log("url is github(issue).")
+    return true
+  }
+  return false
+}
+
+function isGithubUrl(url: string): boolean {
+  return isPullrequest(url) || isIssue(url)
+}
+
+function isSlackUrl(url: string): boolean {
+  let slackRegexp = new RegExp("https://[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.slack\.com/")
+  return slackRegexp.test(url)
+}
+
+function isTrelloUrl(url: string): boolean {
+  return url.startsWith("https://trello.com/c/")
+}
 
 const fetch = async (url: string): Promise<Notes> => {
-  let notes = new Notes;
-  await invoke<string>('fetch_note', { url: url })
-    .then((response) => {
-      let response_as_json_object = JSON.parse(JSON.stringify(response));
+  let plugins = new Plugins()
 
-      let notes_as_map = response_as_json_object.notes as Map<string, Note>;
-      for (let note_key in notes_as_map) {
-        notes.notes.set(note_key, new Note(response_as_json_object.notes[note_key]));
-      }
-    })
+  let username = ""
+  plugins.addPlugin(new GithubPlugin(await invoke("load_token", { username: username, service: "GITHUB_TOKEN" })))
+  plugins.addPlugin(new TrelloPlugin(
+    await invoke("load_token", { username: username, service: "TRELLO_API_KEY" }),
+    await invoke("load_token", { username: username, service: "TRELLO_TOKEN" })))
+  plugins.addPlugin(new SlackPlugin(await invoke("load_token", { username: username, service: "SLACK_BOT_TOKEN" })))
+
+  let rootNote = await plugins.fetchNote(url)
+  if (rootNote === undefined) {
+    rootNote = new Note({ url: url })
+  }
+
+  let notes = new Notes;
+  notes.notes.set(rootNote.url, rootNote)
+
+  await notes.analyze(plugins)
+
   return notes;
 }
 
@@ -57,39 +101,30 @@ function App() {
             />
             <Button
               disabled={disable}
-              onClick={() => {
+              onClick={async () => {
                 setDisable(true)
                 setNotes(new Notes)
-                fetch(url).then((responseNotes) => {
-                  responseNotes.notes = new Map([...responseNotes.notes.entries(), ...notes.notes.entries()])
-                  setNotes(responseNotes)
-                  setDisable(false)
-                })
+                let responseNotes = await fetch(url)
+                responseNotes.notes = new Map([...responseNotes.notes.entries(), ...notes.notes.entries()])
+                setNotes(responseNotes)
+                setDisable(false)
               }}>Fetch</Button>
             <Button
               disabled={disable}
-              onClick={() => {
-                setDisable(true)
+              onClick={async () => {
                 setNotes(new Notes)
-                fetch(url).then((responseNotes) => {
-                  responseNotes.notes = new Map([...responseNotes.notes.entries(), ...notes.notes.entries()])
-                  setNotes(responseNotes)
-                  setDisable(false)
-                })
               }}><FontAwesomeIcon icon={["fas", "bars"]} /></Button>
           </div>
         </div>
         {/* <Tokens /> */}
         <NotesList
           notes={notes}
-          onClickHandler={(url) => {
+          onClickHandler={async (url) => {
             setDisable(true)
             setNotes(new Notes)
-            fetch(url).then((responseNotes) => {
-              responseNotes.notes = new Map([...responseNotes.notes.entries(), ...notes.notes.entries()])
-              setNotes(responseNotes)
-              setDisable(false)
-            })
+            let responseNotes = await fetch(url)
+            responseNotes.notes = new Map([...responseNotes.notes.entries(), ...notes.notes.entries()])
+            setNotes(responseNotes)
             setDisable(false)
           }}
           onGetNoteInfo={url => {
