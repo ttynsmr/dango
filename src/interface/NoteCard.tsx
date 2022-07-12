@@ -89,12 +89,12 @@ const NoteCard: React.FC<Props> = ({ note, onClickHandler, onGetNoteInfo }) => {
 
           <p className="font-bold" hidden={note.links.size == 0}><FontAwesomeIcon className="pr-1" icon={["fas", "arrow-right-from-bracket"]} />referencing</p>
           <p className="indent-2">{Array.from(note.links).map(value => <Tooltip key={value} content={getTitle(value)} className="rounded bg-black text-purple-50">
-            <a className="hover:text-purple-400 rounded grid-flow-col" onClick={() => { onClickHandler(value) }}><PluginIcon className="px-0.5 text-xl" plugin={getPlugin(value)} /></a>
+            <a className="hover:text-purple-400 rounded grid-flow-col" onClick={() => { onClickHandler(value) }}><PluginIcon className="px-0.5 text-xl cursor-pointer" plugin={getPlugin(value)} /></a>
           </Tooltip>
           )}</p>
           <p className="font-bold" hidden={note.referenced.size == 0}><FontAwesomeIcon className="pr-1" icon={["fas", "arrow-right-to-bracket"]} />referenced</p>
           <p className="indent-2">{Array.from(note.referenced).map(value => <Tooltip key={value} content={getTitle(value)} className="rounded bg-black text-purple-50">
-            <a className="hover:text-purple-400 rounded grid-flow-col" onClick={() => { onClickHandler(value) }}><PluginIcon className="px-0.5 text-xl" plugin={getPlugin(value)} /></a>
+            <a className="hover:text-purple-400 rounded grid-flow-col" onClick={() => { onClickHandler(value) }}><PluginIcon className="px-0.5 text-xl cursor-pointer" plugin={getPlugin(value)} /></a>
           </Tooltip>
           )}</p>
         </CardBody>
