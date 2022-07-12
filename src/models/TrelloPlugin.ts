@@ -45,7 +45,7 @@ export class TrelloPlugin implements NotePlugin {
 
     let note = new Note()
     note.plugin = this.name
-    note.title = "[TS]" + card.name;
+    note.title = card.name;
     note.url = card.shortUrl;
     note.sources.push(card.desc)
     note.needFetch = false

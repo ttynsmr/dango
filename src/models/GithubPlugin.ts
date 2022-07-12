@@ -78,7 +78,7 @@ export class GithubPlugin implements NotePlugin {
 
     let note = new Note()
     note.plugin = this.name
-    note.title = "[TS]" + issue.title;
+    note.title = issue.title;
     note.url = issue.html_url;
     if (issue.body) {
       note.sources.push(issue.body)

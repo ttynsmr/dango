@@ -49,13 +49,13 @@ export class SlackPlugin implements NotePlugin {
     let note = new Note()
     note.plugin = this.name
     if (replies.ok) {
-      note.title = "[TS]" + replies.messages[0]?.text;
+      note.title = replies.messages[0]?.text;
       note.url = this.getNormalizedUrl(url);
       note.sources.concat(replies.messages.map(message => message.text))
       note.needFetch = false
     }
     else {
-      note.title = "[TS]" + "🔒";
+      note.title = "🔒";
       note.url = this.getNormalizedUrl(url);
       note.needFetch = false
     }
