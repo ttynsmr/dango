@@ -55,8 +55,7 @@ class Notes {
         }
       }
 
-      // console.log(this.notes)
-      hasNeedFetch = Array.from(this.notes.values()).some(value => value.needFetch)
+      hasNeedFetch = needFetchNotes.length > 0
       console.log("has need fetch", hasNeedFetch)
 
       if (phase > 50) return false
