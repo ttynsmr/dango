@@ -33,6 +33,9 @@ class Notes {
     do {
       console.log(`=============== phase ${phase++}`)
       this.notes.forEach(note => {
+        let newLinks = new Set<string>()
+        note.links.forEach(link => { newLinks.add(plugins.getNormalizedUrl(link)) })
+        note.links = newLinks
         note.links.forEach(link => {
           let referencedNote = this.notes.get(plugins.getNormalizedUrl(link));
           if (!referencedNote) {
@@ -51,7 +54,7 @@ class Notes {
       for (let note of needFetchNotes) {
         let n = await plugins.fetchNote(note.url)
         if (n !== undefined) {
-          this.notes.set(note.url, n)
+          this.notes.set(plugins.getNormalizedUrl(note.url), n)
         }
       }
 
