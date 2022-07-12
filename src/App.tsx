@@ -57,6 +57,8 @@ function App() {
   const [disable, setDisable] = useState(false)
   const [notes, setNotes] = useState(new Notes)
 
+  document.addEventListener('contextmenu', event => event.preventDefault());
+
   return (
     <div className="flex min-w-full min-h-full justify-center content-center">
       <header className="w-full h-full min-h-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
