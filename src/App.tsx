@@ -74,7 +74,7 @@ function App() {
                 setDisable(true)
                 setNotes(new Notes)
                 let responseNotes = await fetch(url)
-                responseNotes.notes = new Map([...responseNotes.notes.entries(), ...notes.notes.entries()])
+                responseNotes.notes = new Map([...responseNotes.notes.entries()])
                 setNotes(responseNotes)
                 setDisable(false)
               }}>Fetch</Button>
@@ -92,7 +92,7 @@ function App() {
             setDisable(true)
             setNotes(new Notes)
             let responseNotes = await fetch(url)
-            responseNotes.notes = new Map([...responseNotes.notes.entries(), ...notes.notes.entries()])
+            responseNotes.notes = new Map([...responseNotes.notes.entries()])
             setNotes(responseNotes)
             setDisable(false)
           }}
