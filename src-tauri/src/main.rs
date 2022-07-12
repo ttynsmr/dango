@@ -11,7 +11,7 @@ fn main() {
     dotenv().ok();
     let context = tauri::generate_context!();
     tauri::Builder::default()
-        .menu(tauri::Menu::os_default(&context.package_info().name))
+        // .menu(tauri::Menu::os_default(&context.package_info().name))
         .invoke_handler(tauri::generate_handler![store_token, load_token])
         .run(context)
         .expect("error while running tauri application");
