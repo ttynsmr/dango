@@ -1,7 +1,6 @@
 use dotenv::dotenv;
 use keyring;
 use std::{env, error::Error};
-mod dependencies;
 
 #[cfg_attr(
     all(not(debug_assertions), target_os = "windows"),
@@ -13,33 +12,9 @@ fn main() {
     let context = tauri::generate_context!();
     tauri::Builder::default()
         .menu(tauri::Menu::os_default(&context.package_info().name))
-        .invoke_handler(tauri::generate_handler![
-            fetch_note,
-            store_token,
-            load_token
-        ])
+        .invoke_handler(tauri::generate_handler![store_token, load_token])
         .run(context)
         .expect("error while running tauri application");
-}
-
-#[tauri::command]
-fn fetch_note(url: &str) -> dependencies::notes::Notes {
-    format!("fetch note url: {}", url);
-
-    let mut notes: dependencies::notes::Notes = dependencies::notes::Notes::new();
-    notes.append_url(url);
-
-    let mut phase = 1;
-    while {
-        println!(
-            "=========================================== phase {}",
-            phase
-        );
-        phase += 1;
-        notes.analyze()
-    } {}
-
-    notes
 }
 
 #[tauri::command]
