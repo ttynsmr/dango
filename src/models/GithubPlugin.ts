@@ -3,6 +3,11 @@ import { NotePlugin } from "./Plugin"
 import * as linkify from 'linkifyjs';
 import { fetch } from '@tauri-apps/api/http';
 
+interface Response {
+  data: GithubIssue
+  ok: boolean
+}
+
 interface GithubIssue {
   title: string
   body: string
@@ -66,7 +71,7 @@ export class GithubPlugin implements NotePlugin {
     let repo = splitted[4]
     let issue_number = Number.parseInt(splitted[6])
 
-    let response = await fetch(`https://api.github.com/repos/${owner}/${repo}/${this.getUrlType(url)}/${issue_number}`, {
+    let response = await fetch<GithubIssue>(`https://api.github.com/repos/${owner}/${repo}/${this.getUrlType(url)}/${issue_number}`, {
       method: "GET",
       headers: {
         Accept: "application/vnd.github+json",
@@ -74,16 +79,23 @@ export class GithubPlugin implements NotePlugin {
       }
     });
 
-    let issue = response.data as GithubIssue
+    let issue = response.data
 
     let note = new Note()
     note.plugin = this.name
-    note.title = issue.title;
-    note.url = issue.html_url;
-    if (issue.body) {
-      note.sources.push(issue.body)
+    if (response.ok) {
+      note.title = issue.title;
+      note.url = issue.html_url;
+      if (issue.body) {
+        note.sources.push(issue.body)
+      }
+      note.needFetch = false
     }
-    note.needFetch = false
+    else {
+      note.url = this.getNormalizedUrl(url)
+      note.needFetch = false
+      return note
+    }
 
     let comments = await this.fetchComments(issue.comments_url)
     note.sources.concat(comments);
