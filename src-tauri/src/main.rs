@@ -1,6 +1,6 @@
 use dotenv::dotenv;
 use keyring;
-use std::{env, error::Error};
+use std::env;
 
 #[cfg_attr(
     all(not(debug_assertions), target_os = "windows"),
