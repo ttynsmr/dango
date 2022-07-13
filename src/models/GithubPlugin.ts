@@ -92,6 +92,7 @@ export class GithubPlugin implements NotePlugin {
       note.needFetch = false
     }
     else {
+      note.title = "🔒"
       note.url = this.getNormalizedUrl(url)
       note.needFetch = false
       return note

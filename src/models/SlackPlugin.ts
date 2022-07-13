@@ -37,14 +37,14 @@ export class SlackPlugin implements NotePlugin {
     let thread_ts_integer = slack_thread_ts.substring(1, slack_thread_ts.length - 6)
     let thread_ts_decimal = slack_thread_ts.substring(slack_thread_ts.length - 6)
 
-    const response = await fetch(`https://slack.com/api/conversations.replies?channel=${slack_channel}&ts=${thread_ts_integer}.${thread_ts_decimal}&pretty=1`, {
+    const response = await fetch<Replies>(`https://slack.com/api/conversations.replies?channel=${slack_channel}&ts=${thread_ts_integer}.${thread_ts_decimal}&pretty=1`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${this.token}`,
       },
     });
 
-    let replies: Replies = response.data as Replies
+    let replies: Replies = response.data
 
     let note = new Note()
     note.plugin = this.name
