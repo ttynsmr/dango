@@ -27,7 +27,7 @@ class Notes {
   }
   public notes: Map<string, Note>;
 
-  public async analyze(plugins: Plugins): Promise<boolean> {
+  public async analyze(plugins: Plugins, onUpdate: (notes: Notes) => void): Promise<boolean> {
     let phase = 1
     let hasNeedFetch = false;
     do {
@@ -47,6 +47,7 @@ class Notes {
 
           referencedNote.referenced.add(note.url)
           this.notes.set(referencedNote.url, referencedNote)
+          onUpdate(this)
         })
       })
 
@@ -55,6 +56,7 @@ class Notes {
         let n = await plugins.fetchNote(note.url)
         if (n !== undefined) {
           this.notes.set(plugins.getNormalizedUrl(note.url), n)
+          onUpdate(this)
         }
       }
 

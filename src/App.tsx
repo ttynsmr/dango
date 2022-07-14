@@ -15,7 +15,7 @@ import { GithubPlugin } from './models/GithubPlugin';
 import { TrelloPlugin } from './models/TrelloPlugin';
 import { SlackPlugin } from './models/SlackPlugin';
 
-const fetch = async (url: string): Promise<Notes> => {
+const fetch = async (url: string, onUpdate: (notes: Notes) => void): Promise<Notes> => {
   let plugins = new Plugins()
 
   let username = ""
@@ -32,8 +32,9 @@ const fetch = async (url: string): Promise<Notes> => {
 
   let notes = new Notes;
   notes.notes.set(rootNote.url, rootNote)
+  onUpdate(notes)
 
-  await notes.analyze(plugins)
+  await notes.analyze(plugins, onUpdate)
 
   return notes;
 }
@@ -75,7 +76,7 @@ function App() {
               onClick={async () => {
                 setDisable(true)
                 setNotes(new Notes)
-                let responseNotes = await fetch(url)
+                let responseNotes = await fetch(url, (notes) => { setNotes(notes) })
                 responseNotes.notes = new Map([...responseNotes.notes.entries()])
                 setNotes(responseNotes)
                 setDisable(false)
@@ -93,7 +94,7 @@ function App() {
           onClickHandler={async (url) => {
             setDisable(true)
             setNotes(new Notes)
-            let responseNotes = await fetch(url)
+            let responseNotes = await fetch(url, (notes) => { setNotes(notes) })
             responseNotes.notes = new Map([...responseNotes.notes.entries()])
             setNotes(responseNotes)
             setDisable(false)
