@@ -80,7 +80,9 @@ function App() {
                 responseNotes.notes = new Map([...responseNotes.notes.entries()])
                 setNotes(responseNotes)
                 setDisable(false)
-              }}>Fetch</Button>
+              }}>
+              {disable ? <FontAwesomeIcon className="animate-spin" icon={["fas", "spinner"]} /> : <FontAwesomeIcon icon={["fas", "magnifying-glass"]} />}
+            </Button>
             <Button
               disabled={disable}
               onClick={async () => {
